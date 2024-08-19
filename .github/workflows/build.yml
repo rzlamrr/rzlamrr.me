@@ -1,0 +1,37 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - new  # Set this to your default branch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check out the code
+      uses: actions/checkout@v3
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+
+    - name: Install dependencies
+      run: |
+        npm i
+        npm install -g html-minifier uglify-js clean-css-cli
+
+    - name: Minify HTML, CSS, and JS
+      run: |
+        mkdir -p dist/assets/js dist/assets/css
+        html-minifier --input-dir . --output-dir ./dist --file-ext html --collapse-whitespace --minify-css true --minify-js true --remove-comments --remove-empty-attributes --remove-empty-elements --remove-optional-tags
+        uglifyjs ./assets/js/script.js --compress --mangle --toplevel --output ./dist/assets/js/script.js
+        cleancss -O2 -o ./dist/assets/css/style.css ./assets/css/style.css
+
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./dist

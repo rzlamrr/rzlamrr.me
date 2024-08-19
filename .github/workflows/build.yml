@@ -30,7 +30,7 @@ jobs:
         echo 'rzlamrr.my.id' > dist/CNAME
         html-minifier --input-dir . --output-dir ./dist --file-ext html --collapse-whitespace --minify-css true --minify-js true --remove-comments
         uglifyjs ./assets/js/script.js --compress --mangle --toplevel --output ./dist/assets/js/script.js
-        cleancss -O2 -o ./dist/assets/css/style.css ./assets/css/style.css
+        cleancss -o ./dist/assets/css/style.css ./assets/css/style.css
         rm -rf dist/node_modules/
 
     - name: Deploy to GitHub Pages
